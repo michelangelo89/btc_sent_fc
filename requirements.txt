@@ -9,6 +9,10 @@ numpy
 pandas
 scikit-learn
 
+# nlp
+torch
+transformers
+
 # tests/linter
 black
 coverage

@@ -1,9 +1,11 @@
 from CloudSentiment.cloud_data import get_data, transform_data
-from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_PATH
+from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_PATH, GS_SENT_PATH, BUCKET_NAME
 import pandas as pd
 import os
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from google.cloud import storage
+
 
 class Sentimenter(object):
     def __init__(self, dates_list, text_list, out_name, **kwargs):
@@ -49,7 +51,7 @@ class Sentimenter(object):
                                                 "neutral"])
 
         self.output = out_df
-    
+
     def save_output(self, how = "local"):
         if how == "local":
             self.output.to_csv(os.path.join(LOCAL_PATH, self.out_name))
@@ -58,24 +60,26 @@ class Sentimenter(object):
         if how == "api":
             return self.output
         if how == "google":
-            pass
-#   def upload_to_gcp(self, filename):
-#       client = storage.Client()
-#       bucket = client.bucket(BUCKET_NAME)
-#       blob = bucket.blob("models/recapmodel/TEMPFILENAME.joblib")
-#       filename
-#       blob.upload_from_filename(filename)
+            client = storage.Client()
+            bucket = client.bucket(BUCKET_NAME)
+            blob = bucket.blob(f"test/{self.out_name}")
+            blob.upload_from_string(self.output.to_csv(),"text/csv")
+            return self.output
+
+    #def upload_to_gcp(self, filename):
+    #    client = storage.Client()
+    #    bucket = client.bucket(BUCKET_NAME)
+    #    blob = bucket.blob(f"test/{filename}")
+    #    blob.upload_from_string(self.output.to_csv(),"text/csv")
+
 
 if __name__ == "__main__":
     N = 10
-    df = get_data("crypto", nrows = N)
+    df = get_data("crypto", nrows = N, how = "local")
     text, dates = transform_data(df)
-    crypto_sentiment = Sentimenter(dates, text, out_name = "crypto_10_test")
+    crypto_sentiment = Sentimenter(dates, text, out_name = "crypto_10_test.csv")
     crypto_sentiment.set_model()
     crypto_sentiment.run()
-    out_df = crypto_sentiment.save_output()
+    #crypto_sentiment.upload_to_gcp("test1.csv")
+    out_df = crypto_sentiment.save_output(how = "google")
     print(out_df.head())
-
-
-
-

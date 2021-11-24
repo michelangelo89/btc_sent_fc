@@ -6,6 +6,7 @@ from datetime import datetime
 import pytz
 import joblib
 import os
+import ast
 
 dirname = os.path.dirname(__file__)
 PATH_TO_MODEL = os.path.join(dirname, "..", "model.joblib")
@@ -29,13 +30,15 @@ def predict(date_list,
             text_list,
             out_name = "test.csv"):
 
+    text_list = ast.literal_eval(text_list)
+    date_list = ast.literal_eval(date_list)
     sentiment = Sentimenter(date_list, text_list, out_name = out_name)
     sentiment.set_model()
     sentiment.run()
     out_df = sentiment.save_output("api")
     output = out_df.to_json()
 
-    return output
+    return out_df
 
 #  "pickup_datetime": pickup_datetime,
 #  "pickup_longitude": pickup_longitude,

@@ -1,4 +1,40 @@
 # ----------------------------------
+#          Local Stuff
+# ---------------------------------
+
+LOCAL_PATH = "raw_data/crypto_10_test"
+
+# ----------------------------------
+#          GCP
+# ----------------------------------
+
+
+# project id - replace with your GCP project id
+PROJECT_ID=btc-sent-fc
+
+# bucket name - replace with your GCP bucket name
+BUCKET_NAME= wagon-data-750-btc-sent-fc
+
+# choose your region from https://cloud.google.com/storage/docs/locations#available_locations
+REGION=eu
+
+set_project:
+	@gcloud config set project ${PROJECT_ID}
+
+create_bucket:
+	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
+
+
+# bucket directory in which to store the uploaded file (`data` is an arbitrary name that we choose to use)
+BUCKET_FOLDER=sent_data
+
+# name for the uploaded file inside of the bucket (we choose not to rename the file that we upload)
+BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
+
+upload_data:
+    # @gsutil cp train_1k.csv gs://wagon-ml-my-bucket-name/data/train_1k.csv
+	@gsutil cp ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
+# ----------------------------------
 #          INSTALL & TEST
 # ----------------------------------
 install_requirements:

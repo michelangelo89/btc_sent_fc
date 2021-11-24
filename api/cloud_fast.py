@@ -28,14 +28,14 @@ def index():
 @app.get("/predict")
 def predict(date_list,
             text_list,
-            out_name = "test.csv"):
+            out_name = "test_api.csv"):
 
     text_list = ast.literal_eval(text_list)
     date_list = ast.literal_eval(date_list)
     sentiment = Sentimenter(date_list, text_list, out_name = out_name)
     sentiment.set_model()
     sentiment.run()
-    out_df = sentiment.save_output("api")
+    out_df = sentiment.save_output("google")
     output = out_df.to_json()
 
     return out_df

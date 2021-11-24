@@ -1,5 +1,5 @@
 import requests
-from cloud_params import LOCAL_CRYPTO_PATH, LOCAL_ECON_PATH
+from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_ECON_PATH
 import pandas as pd
 import numpy as np
 

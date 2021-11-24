@@ -1,5 +1,5 @@
-from cloud_data import get_data, transform_data
-from cloud_params import LOCAL_CRYPTO_PATH, LOCAL_PATH
+from CloudSentiment.cloud_data import get_data, transform_data
+from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_PATH
 import pandas as pd
 import os
 import torch
@@ -55,6 +55,10 @@ class Sentimenter(object):
             self.output.to_csv(os.path.join(LOCAL_PATH, self.out_name))
             print(f"Sentiments saved at {LOCAL_PATH}")
             return self.output
+        if how == "api":
+            return self.output
+        if how == "google":
+            pass
 #   def upload_to_gcp(self, filename):
 #       client = storage.Client()
 #       bucket = client.bucket(BUCKET_NAME)

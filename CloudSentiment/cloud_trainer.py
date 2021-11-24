@@ -52,7 +52,7 @@ class Sentimenter(object):
 
         self.output = out_df
 
-    def save_output(self, how = "local"):
+    def save_output(self, how = "google"):
         if how == "local":
             self.output.to_csv(os.path.join(LOCAL_PATH, self.out_name))
             print(f"Sentiments saved at {LOCAL_PATH}")
@@ -75,7 +75,7 @@ class Sentimenter(object):
 
 if __name__ == "__main__":
     N = 10
-    df = get_data("crypto", nrows = N, how = "local")
+    df = get_data("crypto", nrows = N, how = "google")
     text, dates = transform_data(df)
     crypto_sentiment = Sentimenter(dates, text, out_name = "crypto_10_test.csv")
     crypto_sentiment.set_model()

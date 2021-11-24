@@ -1,9 +1,10 @@
 import requests
-from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_ECON_PATH, GS_DATA_PATH
+from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_ECON_PATH, GS_DATA_ECON_PATH, GS_DATA_CRYPTO_PATH
 import pandas as pd
 import numpy as np
+import os
 
-def get_data(what, nrows = 100, how = "local"):
+def get_data(what, nrows = 100, how = "google"):
     """what is a string that can equal "econ", "crypto", or "twitter"
     how defines whether the data is taken locally or from 
     Returns the approrpriate dataset as a pandas dataframe"""
@@ -17,13 +18,12 @@ def get_data(what, nrows = 100, how = "local"):
         print("Input one of the following strings for 'what': 'crypto', 'econ', or 'twitter'")
         pass
 
-    
     if how == "google":
         if what == "econ":
-            df = pd.read_csv(LOCAL_ECON_PATH, nrows = nrows)
+            df = pd.read_csv(GS_DATA_ECON_PATH, nrows = nrows)
             return df[["date","title"]]
         if what == "crypto":
-            df =  pd.read_csv(LOCAL_CRYPTO_PATH, nrows = nrows)
+            df =  pd.read_csv(GS_DATA_CRYPTO_PATH, nrows = nrows)
             return df[["date","title"]]
         print("Input one of the following strings for 'what': 'crypto', 'econ', or 'twitter'")
         pass

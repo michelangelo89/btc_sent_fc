@@ -5,6 +5,5 @@
 raw_data/
 **/__pycache__/
 .env
-.env.json
 keys.json
 btc-sent-fc-6f09fb12ae2d.json

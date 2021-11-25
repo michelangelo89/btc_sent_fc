@@ -9,6 +9,10 @@ numpy
 pandas
 scikit-learn
 
+# nlp
+torch
+transformers
+
 # tests/linter
 black
 coverage
@@ -17,6 +21,8 @@ pytest
 yapf
 
 # API
+fastapi
+uvicorn
 gcsfs
 google-cloud-storage
 mlflow

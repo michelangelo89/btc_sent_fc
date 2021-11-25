@@ -62,7 +62,7 @@ class Sentimenter(object):
         if how == "google":
             client = storage.Client()
             bucket = client.bucket(BUCKET_NAME)
-            blob = bucket.blob(f"test/{self.out_name}")
+            blob = bucket.blob(f"sent_data/{self.out_name}")
             blob.upload_from_string(self.output.to_csv(),"text/csv")
             return self.output
 

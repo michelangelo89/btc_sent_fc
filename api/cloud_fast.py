@@ -27,14 +27,16 @@ def index():
     return {"greeting": "Hello world"}
 
 @app.get("/predict")
-def predict(N = None,
-            out_name = "test_api.csv"):
-    if N:
-        N = int(N)
-    df = get_data("crypto", nrows = N, how = "google")
-    text_list, date_list = transform_data(df)
-    #date_list = ast.literal_eval(date_list)
-    sentiment = Sentimenter(date_list, text_list, out_name = out_name)
+def predict(date_list,
+            text_list,
+            out_name = "test_api"):
+    #if N:
+    #    N = int(N)
+    #df = get_data("crypto", nrows = N, how = "google")
+    #text_list, date_list = transform_data(df)
+    text_list = ast.literal_eval(text_list)
+    date_list = ast.literal_eval(date_list)
+    sentiment = Sentimenter(date_list, text_list, out_name = out_name+".csv")
     sentiment.set_model()
     sentiment.run()
     out_df = sentiment.save_output("google")

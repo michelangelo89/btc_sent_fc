@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from CloudSentiment.cloud_trainer import Sentimenter
 from CloudSentiment.cloud_data import get_data, transform_data
-from CloudSentiment.cloud_tweet_scrapert import TweetScraper
+from CloudSentiment.cloud_tweet_scraper import TweetScraper
 from datetime import datetime
 import pytz
 import joblib
@@ -47,10 +47,10 @@ def predict(date_list,
 
 @app.get("/tweet")
 def scrape_twitter():
-    scraper = TweetScraper()
     scraper = TweetScraper('2021-11-25T00:00:00.000Z',
                                 "2021-11-26T00:00:00.000Z",
                                 "economy")
     scraper.set_keys()
     scraper.get_tweets_dict()
     scraper.clean_df()
+    scraper.save_df()

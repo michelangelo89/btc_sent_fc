@@ -6,7 +6,7 @@ COPY requirements.txt /requirements.txt
 COPY finbert_model.joblib /finbert_model.joblib
 COPY finbert_token.joblib /finbert_token.joblib
 COPY raw_data/test_2021_11_22.csv /raw_data/test_2021_11_22.csv
-COPY model_RNN.joblib /model_RNN.joblib
+COPY model_RNN_1.joblib /model_RNN_1.joblib
 COPY keys.json /keys.json
 COPY btc-sent-fc-6f09fb12ae2d.json /credentials.json
 

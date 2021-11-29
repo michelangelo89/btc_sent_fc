@@ -86,6 +86,6 @@ def scrape_twitter(n=1, start_date = None, topic = "inflation"):
 def predict():
     model = joblib.load(PATH_TO_MODEL)
     X_pred = np.array(pd.read_csv("raw_data/test_2021_11_22.csv", index_col = 0, parse_dates = True))
-    y_pred = model.predict(X_pred)
+    y_pred = model.predict_on_batch(X_pred)
     return {"prediction": np.exp(y_pred[0])}
 

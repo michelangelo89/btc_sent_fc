@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from CloudSentiment.cloud_trainer import Sentimenter
 from CloudSentiment.cloud_data import get_data, transform_data
-from CloudSentiment.cloud_tweet_scraper import TweetScraper
+from CloudSentiment.cloud_tweet_scraper import TweetScraper, list_blobs
 import datetime as dt
 import pytz
 import joblib
@@ -12,7 +12,7 @@ import ast
 from time import sleep
 
 dirname = os.path.dirname(__file__)
-PATH_TO_MODEL = os.path.join(dirname, "..", "model.joblib")
+PATH_TO_MODEL = os.path.join(dirname, "..", "rnn_v1.joblib")
 
 app = FastAPI()
 
@@ -29,7 +29,7 @@ def index():
     return {"greeting": "Hello world"}
 
 @app.get("/bert")
-def predict(date_list,
+def sentiment(date_list,
             text_list,
             out_name = "test_api"):
     #if N:
@@ -46,10 +46,19 @@ def predict(date_list,
 
     return out_df
 
+@app.get("/blobs")
+def return_blob(topic = "inflation"):
+    return list_blobs(topic)[0]
+
 @app.get("/tweet")
-def scrape_twitter(n=1, topic = "inflation"):
+def scrape_twitter(n=1, start_date = None, topic = "inflation"):
+    if start_date:
+        date = dt.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.000Z")
+    else:
+        start_date = list_blobs(topic)[0]
+    n = int(n)
     LIST_DATES = []
-    date = dt.datetime(2021,11,29,0,0)
+    date = dt.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.000Z")
     for i in range(n):
         LIST_DATES.append(date.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
         date = date - dt.timedelta(days = 1)
@@ -64,12 +73,17 @@ def scrape_twitter(n=1, topic = "inflation"):
         for k in range(0, tweet_df.shape[0],20):
             df = tweet_df.iloc[k:k+20].copy()
             text_list, date_list = transform_data(df[["tweet_date","title"]])
-            sentiment = Sentimenter(date_list, text_list, out_name = f"tweet_inflation_{LIST_DATES[i]}.csv")
+            sentiment = Sentimenter(date_list, text_list, out_name = f"tweet_inflation_{LIST_DATES[i]}_{k}.csv")
             sentiment.set_model()
             sentiment.run()
             out_df = sentiment.save_output("google")
         sleep(5)
-        print(f"{LIST_DATES[i]} processed")
+        #print(f"{LIST_DATES[i]} processed")
 
 
+@app.get("/predict")
+def predict():
+    model = joblib.load(PATH_TO_MODEL)
+    y_pred = model.predict()
+    return {"prediction": y_pred[0]}
 

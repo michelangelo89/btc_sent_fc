@@ -12,17 +12,18 @@ from CloudSentiment.cloud_params import KEY_PATH, BUCKET_NAME
 
 SEARCH_URL = "https://api.twitter.com/2/tweets/search/all"
 
-def list_blobs(bucket_name):
+def list_blobs(topic):
     """Lists all the blobs in the bucket."""
     # bucket_name = "your-bucket-name"
 
     storage_client = storage.Client()
 
     # Note: Client.list_blobs requires at least package version 1.17.0.
-    blobs = storage_client.list_blobs(bucket_name, prefix="tweet_data")
+    blobs = storage_client.list_blobs(BUCKET_NAME, prefix=f"tweet_data/{topic}")
     #for blob in blobs:
-    blob_list  = [blob for blob in blobs]
-    return len(blob_list)
+    blob_list  = [blob.name[-24:] for blob in blobs]
+    blob_list.sort()
+    return (blob_list)
 
 
 
@@ -133,7 +134,7 @@ class TweetScraper(object):
         df_column = df_column.str.lower()
         df.loc[:,f'clean_{column}'] = df_column
         df = df[df["clean_tweet"].str.contains(self.topic)==True]
-        df["title"] = df[f'clean_{column}'].apply(lambda x: str(x).replace('\n','')) # remove newlines '\n' from stings
+        df.loc[:, "title"] = df[f'clean_{column}'].apply(lambda x: str(x).replace('\n','')) # remove newlines '\n' from stings
         self.df = df
 
     def save_df(self):
@@ -145,12 +146,12 @@ class TweetScraper(object):
         return self.df
 
 if __name__ == "__main__":
-    scraper = TweetScraper('2021-11-25T00:00:00.000Z',
-                                "2021-11-26T00:00:00.000Z",
-                                "inflation")
-    scraper.set_keys()
-    scraper.get_tweets_dict()
-    scraper.clean_df()
-    scraper.save_df()
-    print(scraper.df.head())
-    print(list_blobs(BUCKET_NAME))
+    #scraper = TweetScraper('2021-11-25T00:00:00.000Z',
+    #                            "2021-11-26T00:00:00.000Z",
+    #                            "inflation")
+    #scraper.set_keys()
+    #scraper.get_tweets_dict()
+    #scraper.clean_df()
+    #scraper.save_df()
+    #print(scraper.df.head())
+    print(list_blobs("inflation"))

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from CloudSentiment.cloud_trainer import Sentimenter
 from CloudSentiment.cloud_data import get_data, transform_data
-from CloudSentiment.cloud_tweet_scraper import TweetScraper
+from CloudSentiment.cloud_tweet_scraper import TweetScraper, list_blobs
 import datetime as dt
 import pytz
 import joblib
@@ -47,10 +47,14 @@ def predict(date_list,
     return out_df
 
 @app.get("/tweet")
-def scrape_twitter(n=1, topic = "inflation"):
+def scrape_twitter(n=1, start_date = None, topic = ""):
+    if start_date:
+        date = dt.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.000Z")
+    else:
+        start_date = list_blobs(topic)[0]
     n = int(n)
     LIST_DATES = []
-    date = dt.datetime(2021,11,29,0,0)
+    date = dt.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.000Z")
     for i in range(n):
         LIST_DATES.append(date.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
         date = date - dt.timedelta(days = 1)
@@ -65,12 +69,12 @@ def scrape_twitter(n=1, topic = "inflation"):
         for k in range(0, tweet_df.shape[0],20):
             df = tweet_df.iloc[k:k+20].copy()
             text_list, date_list = transform_data(df[["tweet_date","title"]])
-            sentiment = Sentimenter(date_list, text_list, out_name = f"tweet_inflation_{LIST_DATES[i]}.csv")
+            sentiment = Sentimenter(date_list, text_list, out_name = f"tweet_inflation_{LIST_DATES[i]}_{k}.csv")
             sentiment.set_model()
             sentiment.run()
             out_df = sentiment.save_output("google")
         sleep(5)
-        print(f"{LIST_DATES[i]} processed")
+        #print(f"{LIST_DATES[i]} processed")
 
 
 

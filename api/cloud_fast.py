@@ -4,11 +4,12 @@ import pandas as pd
 from CloudSentiment.cloud_trainer import Sentimenter
 from CloudSentiment.cloud_data import get_data, transform_data
 from CloudSentiment.cloud_tweet_scraper import TweetScraper
-from datetime import datetime
+import datetime as dt
 import pytz
 import joblib
 import os
 import ast
+from time import sleep
 
 dirname = os.path.dirname(__file__)
 PATH_TO_MODEL = os.path.join(dirname, "..", "model.joblib")
@@ -46,11 +47,29 @@ def predict(date_list,
     return out_df
 
 @app.get("/tweet")
-def scrape_twitter():
-    scraper = TweetScraper('2021-11-25T00:00:00.000Z',
-                                "2021-11-26T00:00:00.000Z",
-                                "economy")
-    scraper.set_keys()
-    scraper.get_tweets_dict()
-    scraper.clean_df()
-    scraper.save_df()
+def scrape_twitter(n=1, topic = "inflation"):
+    LIST_DATES = []
+    date = dt.datetime(2021,11,29,0,0)
+    for i in range(n):
+        LIST_DATES.append(date.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
+        date = date - dt.timedelta(days = 1)
+    for i in range(len(LIST_DATES)-1):
+        scraper = TweetScraper(LIST_DATES[i],
+                            LIST_DATES[i+1],
+                                topic)
+        scraper.set_keys()
+        scraper.get_tweets_dict()
+        scraper.clean_df()
+        tweet_df = scraper.save_df()
+        for k in range(0, tweet_df.shape[0],20):
+            df = tweet_df.iloc[k:k+20].copy()
+            text_list, date_list = transform_data(df[["tweet_date","title"]])
+            sentiment = Sentimenter(date_list, text_list, out_name = f"tweet_inflation_{LIST_DATES[i]}.csv")
+            sentiment.set_model()
+            sentiment.run()
+            out_df = sentiment.save_output("google")
+        sleep(5)
+        print(f"{LIST_DATES[i]} processed")
+
+
+

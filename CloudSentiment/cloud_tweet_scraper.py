@@ -20,8 +20,9 @@ def list_blobs(bucket_name):
 
     # Note: Client.list_blobs requires at least package version 1.17.0.
     blobs = storage_client.list_blobs(bucket_name, prefix="tweet_data")
-    for blob in blobs:
-        print(blob.name)
+    #for blob in blobs:
+    blob_list  = [blob for blob in blobs]
+    return len(blob_list)
 
 
 
@@ -131,8 +132,8 @@ class TweetScraper(object):
         df_column = df_column.str.replace("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)",'') # clean tweet of tags, punctuation
         df_column = df_column.str.lower()
         df.loc[:,f'clean_{column}'] = df_column
+        df = df[df["clean_tweet"].str.contains(self.topic)==True]
         df["title"] = df[f'clean_{column}'].apply(lambda x: str(x).replace('\n','')) # remove newlines '\n' from stings
-
         self.df = df
 
     def save_df(self):
@@ -144,12 +145,12 @@ class TweetScraper(object):
         return self.df
 
 if __name__ == "__main__":
-    #scraper = TweetScraper('2021-11-25T00:00:00.000Z',
-    #                            "2021-11-26T00:00:00.000Z",
-    #                            "economy")
-    #scraper.set_keys()
-    #scraper.get_tweets_dict()
-    #scraper.clean_df()
-    #scraper.save_df()
-    #print(scraper.df.head())
-    list_blobs(BUCKET_NAME)#+"/tweet_data")
+    scraper = TweetScraper('2021-11-25T00:00:00.000Z',
+                                "2021-11-26T00:00:00.000Z",
+                                "inflation")
+    scraper.set_keys()
+    scraper.get_tweets_dict()
+    scraper.clean_df()
+    scraper.save_df()
+    print(scraper.df.head())
+    print(list_blobs(BUCKET_NAME))

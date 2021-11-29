@@ -10,9 +10,10 @@ import joblib
 import os
 import ast
 from time import sleep
+import numpy as np
 
 dirname = os.path.dirname(__file__)
-PATH_TO_MODEL = os.path.join(dirname, "..", "rnn_v1.joblib")
+PATH_TO_MODEL = os.path.join(dirname, "..", "model_RNN.joblib")
 
 app = FastAPI()
 
@@ -84,6 +85,7 @@ def scrape_twitter(n=1, start_date = None, topic = "inflation"):
 @app.get("/predict")
 def predict():
     model = joblib.load(PATH_TO_MODEL)
-    y_pred = model.predict()
-    return {"prediction": y_pred[0]}
+    X_pred = np.array(pd.read_csv("raw_data/test_2021_11_22.csv", index_col = 0, parse_dates = True))
+    y_pred = model.predict(X_pred)
+    return {"prediction": np.exp(y_pred[0])}
 

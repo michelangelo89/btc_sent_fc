@@ -34,3 +34,7 @@ joblib
 memoized-property
 termcolor
 python-dotenv
+
+# scraping
+langdetect
+textblob

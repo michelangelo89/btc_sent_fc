@@ -12,7 +12,7 @@ import ast
 from time import sleep
 
 dirname = os.path.dirname(__file__)
-PATH_TO_MODEL = os.path.join(dirname, "..", "model.joblib")
+PATH_TO_MODEL = os.path.join(dirname, "..", "rnn_v1.joblib")
 
 app = FastAPI()
 
@@ -29,7 +29,7 @@ def index():
     return {"greeting": "Hello world"}
 
 @app.get("/bert")
-def predict(date_list,
+def sentiment(date_list,
             text_list,
             out_name = "test_api"):
     #if N:
@@ -81,4 +81,9 @@ def scrape_twitter(n=1, start_date = None, topic = "inflation"):
         #print(f"{LIST_DATES[i]} processed")
 
 
+@app.get("/predict")
+def predict():
+    model = joblib.load(PATH_TO_MODEL)
+    y_pred = model.predict()
+    return {"prediction": y_pred[0]}
 

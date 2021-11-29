@@ -11,17 +11,19 @@ from tensorflow.keras import layers
 from keras.metrics import MeanAbsoluteError, MeanAbsolutePercentageError
 from tensorflow.keras.layers.experimental.preprocessing import Normalization
 from tensorflow.keras import layers, callbacks
-
-
-normalizer = Normalization()
-normalizer.adapt(X_train)
+from tensorflow.keras import optimizers, metrics
 
 
 
-def initial_model():
+
+
+def initial_model(X_train):
+
+    opt = optimizers.RMSprop(learning_rate=0.1)
 
     model = Sequential()
-    model.add(normalizer)
+    #model.add(normalizer)
+
 
     model.add(LSTM(units=50, activation='tanh',
                    return_sequences=True))  # dropout = 0.2
@@ -33,7 +35,7 @@ def initial_model():
     model.add(layers.Dense(1, activation='linear'))
 
     model.compile(loss='mae',
-                  optimizer='adam',
+                  optimizer=opt,
                   metrics=[MeanAbsoluteError(),
                            MeanAbsolutePercentageError()])
 

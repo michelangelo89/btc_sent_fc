@@ -133,7 +133,7 @@ class TweetScraper(object):
         df_column = df_column.str.lower()
         df.loc[:,f'clean_{column}'] = df_column
         df = df[df["clean_tweet"].str.contains(self.topic)==True]
-        df["title"] = df[f'clean_{column}'].apply(lambda x: str(x).replace('\n','')) # remove newlines '\n' from stings
+        df.loc[:, "title"] = df[f'clean_{column}'].apply(lambda x: str(x).replace('\n','')) # remove newlines '\n' from stings
         self.df = df
 
     def save_df(self):

@@ -48,6 +48,7 @@ def predict(date_list,
 
 @app.get("/tweet")
 def scrape_twitter(n=1, topic = "inflation"):
+    n = int(n)
     LIST_DATES = []
     date = dt.datetime(2021,11,29,0,0)
     for i in range(n):

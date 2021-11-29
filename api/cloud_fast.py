@@ -46,8 +46,12 @@ def predict(date_list,
 
     return out_df
 
+@app.get("/blobs")
+def return_blob(topic = "inflation"):
+    return list_blobs(topic)[0]
+
 @app.get("/tweet")
-def scrape_twitter(n=1, start_date = None, topic = ""):
+def scrape_twitter(n=1, start_date = None, topic = "inflation"):
     if start_date:
         date = dt.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.000Z")
     else:

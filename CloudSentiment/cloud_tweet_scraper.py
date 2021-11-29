@@ -154,4 +154,4 @@ if __name__ == "__main__":
     #scraper.clean_df()
     #scraper.save_df()
     #print(scraper.df.head())
-    print(list_blobs("inflation")[0])
+    print(list_blobs("inflation"))

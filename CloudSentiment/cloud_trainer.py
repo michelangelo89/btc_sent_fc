@@ -25,7 +25,8 @@ def load_model(how = "bert"):
 
 class Sentimenter(object):
     def __init__(self, dates_list, text_list, out_name, **kwargs):
-        """df is a dataframe containing titles/tweets and dates"""
+        """dates and text_list are lists containing dates and text respectively;
+        containing titles/tweets and dates"""
         self.tokenizer = None
         self.model = None
         self.dates = dates_list

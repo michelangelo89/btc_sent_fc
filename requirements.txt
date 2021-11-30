@@ -8,6 +8,8 @@ wheel>=0.29
 numpy
 pandas
 scikit-learn
+tensorflow
+keras
 
 # nlp
 torch
@@ -27,6 +29,7 @@ gcsfs
 google-cloud-storage
 mlflow
 s3fs
+tweepy
 
 # utilities
 six>=1.14

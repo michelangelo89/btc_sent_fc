@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 
-def get_data(what, nrows = 100, how = "google"):
+def get_data(what, nrows = 100, how = "local"):
     """what is a string that can equal "econ", "crypto", or "twitter"
     how defines whether the data is taken locally or from 
     Returns the approrpriate dataset as a pandas dataframe"""
@@ -15,8 +15,6 @@ def get_data(what, nrows = 100, how = "google"):
         if what == "crypto":
             df =  pd.read_csv(LOCAL_CRYPTO_PATH, nrows = nrows)
             return df[["date","title"]]
-        print("Input one of the following strings for 'what': 'crypto', 'econ', or 'twitter'")
-        pass
 
     if how == "google":
         if what == "econ":

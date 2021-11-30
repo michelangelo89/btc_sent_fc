@@ -20,6 +20,7 @@ from keras.wrappers.scikit_learn import KerasRegressor
 from tensorflow.keras import layers, callbacks
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import FunctionTransformer
+from RNN_model.params import no_log_col_, target, log_col_
 
 
 
@@ -51,14 +52,14 @@ class Trainer(object):
 
         no_log_col = Pipeline([('imputer', KNNImputer()),('scaler', StandardScaler())])
 
-        preproc_pipe = make_column_transformer(
-        (log_col, ''),
-        (no_log_col, ''),
-        (target_col, ''),
-        remainder='passthrough')
+        preproc_pipe = make_column_transformer((log_col, log_col_),
+                                               (no_log_col, no_log_col_),
+                                               (target_col, target),
+                                               remainder='passthrough')
 
+        es = callbacks.EarlyStopping(patience=20)
 
-        estimator = KerasRegressor(build_fn=initial_model(X_train),
+        estimator = KerasRegressor(build_fn=initial_model(),
                                    validation_split=0.2,
                                    nb_epoch=100,
                                    batch_size=100,
@@ -70,7 +71,7 @@ class Trainer(object):
 
     def run(self):
         self.set_pipeline()
-        self.mlflow_log_param("model", "Linear")
+        #self.mlflow_log_param("model", "Linear")
         self.pipeline.fit(self.X, self.y)
 
     def evaluate(self, X_test, y_test):
@@ -78,8 +79,9 @@ class Trainer(object):
         res = self.pipeline.evaluate(X_test, y_test, verbose=0)
         #y_pred = self.pipeline.predict(X_test)
         #rmse = compute_rmse(y_pred, y_test)
-        self.mlflow_log_metric("MAPE", res)
-        return round(res, 2)
+        # self.mlflow_log_metric("MAPE", res)
+        return print(f'MAPE on the test set : {res[2]:.0f} %')
+
 
     def save_model_locally(self):
         """Save the model into a .joblib format"""
@@ -91,7 +93,7 @@ class Trainer(object):
 if __name__ == "__main__":
     # Get and clean data
     #N = 100
-    df = get_data_from_raw()  #nrows=N)
+    df = get_features_from_raw_data()  #nrows=N)
     #df = clean_data(df)
     len_ = int(0.8 * df.shape[0])
     df_train = df[:len_]
@@ -100,10 +102,11 @@ if __name__ == "__main__":
     X_test, y_test = get_X_y(df_test, 2000, 90, target_name='volume_gross')
     # Train and save model, locally and
     trainer = Trainer(X=X_test, y=y_train)
-    trainer.set_experiment_name('xp2')
+    trainer.set_experiment_name('RNN_BTC')
     trainer.run()
     res = trainer.evaluate(X_test, y_test, verbose=0)
     print(f'MAPE on the test set : {res[2]:.0f} %')
     print(f"rmse: {res}")
     trainer.save_model_locally()
-    storage_upload()
+
+    #storage_upload()

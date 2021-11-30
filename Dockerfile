@@ -1,6 +1,6 @@
 FROM python:3.8.6-buster
 
-COPY CloudSentiment /CloudSentiment
+COPY Main_package/CloudSentiment Main_package/CloudSentiment
 COPY api /api
 COPY requirements.txt /requirements.txt
 COPY finbert_model.joblib /finbert_model.joblib

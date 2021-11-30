@@ -1,5 +1,5 @@
-from CloudSentiment.cloud_data import get_data, transform_data
-from CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_PATH, GS_SENT_PATH, BUCKET_NAME, GS_MODEL_PATH
+from Main_package.CloudSentiment.cloud_data import get_data, transform_data
+from Main_package.CloudSentiment.cloud_params import LOCAL_CRYPTO_PATH, LOCAL_PATH, GS_SENT_PATH, BUCKET_NAME, GS_MODEL_PATH
 import pandas as pd
 import os
 import torch
@@ -101,5 +101,5 @@ if __name__ == "__main__":
     crypto_sentiment.set_model()
     crypto_sentiment.run()
     #crypto_sentiment.upload_to_gcp("test1.csv")
-    out_df = crypto_sentiment.save_output(how = "google")
+    out_df = crypto_sentiment.save_output(how = "api")
     print(out_df.head())

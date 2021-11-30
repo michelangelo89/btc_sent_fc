@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
-from CloudSentiment.cloud_trainer import Sentimenter
-from CloudSentiment.cloud_data import get_data, transform_data
-from CloudSentiment.cloud_tweet_scraper import TweetScraper, list_blobs
+from Main_package.CloudSentiment.cloud_trainer import Sentimenter
+from Main_package.CloudSentiment.cloud_data import get_data, transform_data
+from Main_package.CloudSentiment.cloud_tweet_scraper import TweetScraper, list_blobs
 import datetime as dt
 import pytz
 import joblib

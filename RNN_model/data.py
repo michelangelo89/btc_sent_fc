@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 from google.cloud import storage
-from TaxiFareModel.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
+from RNN_model.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
 
 
 

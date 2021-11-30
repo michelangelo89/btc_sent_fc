@@ -5,7 +5,9 @@ import requests
 import time
 import json
 
+import osometweet
 from google.cloud import storage
+from datetime import datetime
 from datetime import date
 from datetime import timedelta
 from CloudSentiment.cloud_params import KEY_PATH, BUCKET_NAME
@@ -60,7 +62,12 @@ class TweetScraper(object):
     def connect_to_endpoint(self, url, params):
         response = requests.request("GET", SEARCH_URL, auth=self.bearer_oauth, params=params)
         #print(response.status_code)
-        if response.status_code != 200:
+        if response.status_code == 429:
+                buffer_wait_time = 15
+                resume_time = datetime.fromtimestamp( int(response.headers["x-rate-limit-reset"]) + buffer_wait_time )
+                print(f"Too many requests. Waiting on Twitter.\n\tResume Time: {resume_time}")
+                osometweet.pause_until(resume_time)
+        elif response.status_code != 200:
             raise Exception(response.status_code, response.text)
         return response.json()
 
@@ -112,13 +119,14 @@ class TweetScraper(object):
             for topic in topics:
                 query_params = {'query':topic ,"end_time": tweet_date, "max_results":max_results, "tweet.fields":"public_metrics"}
                 json_response = self.connect_to_endpoint(SEARCH_URL, query_params)
-                available_tweets= len(json_response['data'])-1 # get number of tweets returned by the request if 
-
-                tweeter_data['tweet'] += self.get_tweets(json_response, max_results=available_tweets)
-                tweeter_data['tweet_id'] += self.get_tweets_ids(json_response, max_results=available_tweets)
-                tweeter_data['tweet_date'] += self.get_dates(tweet_date, max_results=available_tweets)
-                tweeter_data['topic'] += self.get_topic(topic, max_results=available_tweets)
-
+                if json_response.get("data", None):
+                    available_tweets= len(json_response['data'])-1 # get number of tweets returned by the request if 
+                    tweeter_data['tweet'] += self.get_tweets(json_response, max_results=available_tweets)
+                    tweeter_data['tweet_id'] += self.get_tweets_ids(json_response, max_results=available_tweets)
+                    tweeter_data['tweet_date'] += self.get_dates(tweet_date, max_results=available_tweets)
+                    tweeter_data['topic'] += self.get_topic(topic, max_results=available_tweets)
+                else:
+                    pass
                 time.sleep(5)
 
         self.data = tweeter_data
@@ -146,12 +154,12 @@ class TweetScraper(object):
         return self.df
 
 if __name__ == "__main__":
-    #scraper = TweetScraper('2021-11-25T00:00:00.000Z',
-    #                            "2021-11-26T00:00:00.000Z",
-    #                            "inflation")
-    #scraper.set_keys()
-    #scraper.get_tweets_dict()
-    #scraper.clean_df()
-    #scraper.save_df()
-    #print(scraper.df.head())
-    print(list_blobs("inflation"))
+    scraper = TweetScraper('2020-07-15T00:00:00.000Z',
+                                "2020-07-14T00:00:00.000Z",
+                                "inflation")
+    scraper.set_keys()
+    scraper.get_tweets_dict()
+    scraper.clean_df()
+    scraper.save_df()
+    print(scraper.df.head())
+    #print(list_blobs("inflation"))

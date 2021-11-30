@@ -88,6 +88,6 @@ def predict():
     X_pred = np.zeros((1,89,61))
     X_pred[0] = np.array(pd.read_csv("raw_data/test_2021_11_22.csv", index_col = 0, parse_dates = True))
     y_pred = model.predict_on_batch(X_pred)
-    return {"prediction": y_pred[0][0]}
+    return {"prediction": f"{np.exp(y_pred[0][0])}"}
     #return "It works"
 

@@ -61,13 +61,13 @@ class Trainer(object):
 
         estimator = KerasRegressor(build_fn=initial_model(),
                                    validation_split=0.2,
-                                   nb_epoch=100,
+                                   nb_epoch=3,
                                    batch_size=100,
                                    callbacks=[es],
                                    verbose=False)
 
         self.pipeline = Pipeline([('preproc', preproc_pipe),
-                                  ('KNN', estimator)])
+                                  ('RNN', estimator)])
 
     def run(self):
         self.set_pipeline()
@@ -98,15 +98,15 @@ if __name__ == "__main__":
     len_ = int(0.8 * df.shape[0])
     df_train = df[:len_]
     df_test = df[len_:]
-    X_train, y_train = get_X_y(df_train, 2000, 90, target_name='volume_gross')
-    X_test, y_test = get_X_y(df_test, 2000, 90, target_name='volume_gross')
+    X_train, y_train = get_X_y(df_train, 100, 90, target_name='volume_gross')
+    X_test, y_test = get_X_y(df_test, 100, 90, target_name='volume_gross')
     # Train and save model, locally and
     trainer = Trainer(X=X_test, y=y_train)
     trainer.set_experiment_name('RNN_BTC')
     trainer.run()
     res = trainer.evaluate(X_test, y_test, verbose=0)
     print(f'MAPE on the test set : {res[2]:.0f} %')
-    print(f"rmse: {res}")
+    #print(f"rmse: {res}")
     trainer.save_model_locally()
 
     #storage_upload()

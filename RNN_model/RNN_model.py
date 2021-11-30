@@ -17,7 +17,7 @@ from tensorflow.keras import optimizers, metrics
 
 
 
-def initial_model(X_train):
+def initial_model():
 
     opt = optimizers.RMSprop(learning_rate=0.1)
 

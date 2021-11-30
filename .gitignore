@@ -8,3 +8,4 @@ raw_data/
 keys.json
 btc-sent-fc-6f09fb12ae2d.json
 *.joblib
+.vscode/

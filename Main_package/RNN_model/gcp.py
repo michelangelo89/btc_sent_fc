@@ -5,10 +5,9 @@ from termcolor import colored
 from Main_package.RNN_model.params import BUCKET_NAME
 
 
-def storage_upload(rm=False):
+def storage_upload(rm=False, local_model_name='model.RNN_01'):
     client = storage.Client().bucket(BUCKET_NAME)
 
-    local_model_name = 'model.RNN_01'
     storage_location = f"models//{local_model_name}"
     blob = client.blob(storage_location)
     blob.upload_from_filename(local_model_name)

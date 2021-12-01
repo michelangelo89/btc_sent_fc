@@ -20,59 +20,44 @@ def get_data_from_gcp(optimize=False, **kwargs):
     """method to get the training data (or a portion of it) from google cloud bucket"""
     # Add Client() here
     client = storage.Client()
-    path = f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}"
+    path = 'gs://wagon-data-750-btc-sent-fc/input_data/input_data_1.csv'
     df = pd.read_csv(path)
     return df
-
-
-
-def get_features_from_raw_data():
-
-    data_path = 'raw_data/final_data'
-
-    df = pd.read_csv(os.path.join(data_path, 'features_2016.csv'),
-                index_col=0,
-                parse_dates=True)
-
-
-    log = FunctionTransformer(lambda x: np.log(x))
-
-    log_col = Pipeline([('log',log),('imputer', KNNImputer()),('scaler', StandardScaler())])
-
-    target_col = Pipeline([('log',log),('imputer', KNNImputer())])
-
-    no_log_col = Pipeline([('imputer', KNNImputer()),('scaler', StandardScaler())])
-
-    preproc_pipe = make_column_transformer((log_col, log_col_),
-                                               (no_log_col, no_log_col_),
-                                               (target_col, target),
-                                               remainder='passthrough')
-
-
-    return pd.DataFrame(preproc_pipe.fit_transform(df),columns = df.columns,
-                        index = df.index)
 
 
 def clean_features(df):
 
     log = FunctionTransformer(lambda x: np.log(x))
 
-    log_col = Pipeline([('log',log),('imputer', KNNImputer()),('scaler', StandardScaler())])
+    log_col = Pipeline([('imputer', KNNImputer()), ('log', log),
+                        ('scaler', StandardScaler())])
 
-    target_col = Pipeline([('log',log),('imputer', KNNImputer())])
+    target_col = Pipeline([('imputer', KNNImputer()), ('log', log)])
 
-    no_log_col = Pipeline([('imputer', KNNImputer()),('scaler', StandardScaler())])
+    no_log_col = Pipeline([('imputer', KNNImputer()),
+                           ('scaler', StandardScaler())])
 
     preproc_pipe = make_column_transformer(
-        (log_col, log_col_),
-        #(no_log_col, no_log_col_),
+        #(log_col, log_col_),
+        (no_log_col, no_log_col_),
         (target_col, target),
-        remainder= no_log_col)
+        remainder=log_col)
 
 
     return pd.DataFrame(preproc_pipe.fit_transform(df),
                         columns = df.columns,
                         index = df.index)
+
+
+def get_features_from_raw_data():
+
+    data_path = 'raw_data/final_data'
+
+    df = pd.read_csv(os.path.join(data_path, 'input_data_input_data_1.csv'),
+                     index_col=0,
+                     parse_dates=True)
+
+    return clean_features(df)
 
 
 

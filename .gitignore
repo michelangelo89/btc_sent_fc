@@ -6,5 +6,6 @@ raw_data/
 **/__pycache__/
 .env
 keys.json
+btc-sent-fc-dd81034dfecd.json
 btc-sent-fc-6f09fb12ae2d.json
 finbert_model.joblib

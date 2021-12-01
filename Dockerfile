@@ -8,7 +8,7 @@ COPY finbert_token.joblib /finbert_token.joblib
 COPY raw_data/test_2021_11_22.csv /raw_data/test_2021_11_22.csv
 COPY model_RNN_1.joblib /model_RNN_1.joblib
 COPY keys.json /keys.json
-COPY btc-sent-fc-6f09fb12ae2d.json /credentials.json
+COPY btc-sent-fc-dd81034dfecd.json /credentials.json
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt

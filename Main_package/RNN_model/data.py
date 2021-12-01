@@ -4,6 +4,8 @@ import numpy as np
 from google.cloud import storage
 from Main_package.RNN_model.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
 import gcsfs
+import joblib
+import pickle 
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -63,14 +65,25 @@ def clean_features(df):
 
     no_log_col = Pipeline([('imputer', KNNImputer()),('scaler', StandardScaler())])
 
-    preproc_pipe = make_column_transformer(
+    columns = make_column_transformer(
         (log_col, log_col_),
-        #(no_log_col, no_log_col_),
+        (no_log_col, no_log_col_),
         (target_col, target),
         remainder= no_log_col)
+    
+    preproc_pipe = Pipeline(["columns", columns])
+    preproc_pipe.fit(df)
+    #joblib.dump(preproc_pipe, "../pipe.joblib")
+    
+    return preproc_pipe#pd.DataFrame(preproc_pipe.transform(df),
+                       # columns = df.columns,
+                       # index = df.index)
 
-
-    return pd.DataFrame(preproc_pipe.fit_transform(df),
+def clean_test_features(df):
+    with open('../pipeline.pickle', 'rb') as picklefile:
+        preproc_pipe = pickle.load(picklefile)
+    #preproc_pipe = joblib.load("../pipeline.joblib")
+    return pd.DataFrame(preproc_pipe.transform(df),
                         columns = df.columns,
                         index = df.index)
 

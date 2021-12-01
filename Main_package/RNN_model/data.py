@@ -72,8 +72,7 @@ def clean_features(df):
         (no_log_col, no_log_col_),
         (target_col, target),
         remainder= no_log_col)
-    
-    #preproc_pipe = Pipeline(["columns", columns])
+
     preproc_pipe.fit(df)
     joblib.dump(preproc_pipe, "../pipe.joblib")
 

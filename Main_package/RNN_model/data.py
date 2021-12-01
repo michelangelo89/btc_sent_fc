@@ -3,6 +3,7 @@ import os
 import numpy as np
 from google.cloud import storage
 from Main_package.RNN_model.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
+import gcsfs
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -15,18 +16,14 @@ from sklearn.preprocessing import FunctionTransformer
 from Main_package.RNN_model.params import no_log_col_, target, log_col_
 
 
-def get_data_from_gcp(nrows=10000, optimize=False, **kwargs):
+def get_data_from_gcp(optimize=False, **kwargs):
     """method to get the training data (or a portion of it) from google cloud bucket"""
     # Add Client() here
     client = storage.Client()
     path = f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}"
-    df = pd.read_csv(path, nrows=nrows)
+    df = pd.read_csv(path)
     return df
 
-
-def clean_data(df, test=False):
-
-    pass
 
 
 def get_features_from_raw_data():
@@ -54,6 +51,29 @@ def get_features_from_raw_data():
 
     return pd.DataFrame(preproc_pipe.fit_transform(df),columns = df.columns,
                         index = df.index)
+
+
+def clean_features(df):
+
+    log = FunctionTransformer(lambda x: np.log(x))
+
+    log_col = Pipeline([('log',log),('imputer', KNNImputer()),('scaler', StandardScaler())])
+
+    target_col = Pipeline([('log',log),('imputer', KNNImputer())])
+
+    no_log_col = Pipeline([('imputer', KNNImputer()),('scaler', StandardScaler())])
+
+    preproc_pipe = make_column_transformer(
+        (log_col, log_col_),
+        #(no_log_col, no_log_col_),
+        (target_col, target),
+        remainder= no_log_col)
+
+
+    return pd.DataFrame(preproc_pipe.fit_transform(df),
+                        columns = df.columns,
+                        index = df.index)
+
 
 
 

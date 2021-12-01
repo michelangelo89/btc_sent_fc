@@ -96,3 +96,31 @@ pypi:
 run_api:
 	uvicorn api.cloud_fast:app --reload  # load web server with code autoreload
 
+run_api_m:
+	uvicorn api_m.c_f:app_m --reload
+##### Job - - - - - - - - - - - - - - - - - - - - - - - - -
+
+JOB_NAME=volume_BTC_training_pipeline_$(shell date +'%Y%m%d_%H%M%S')
+
+# will store the packages uploaded to GCP for the training
+BUCKET_TRAINING_FOLDER = 'trainings'
+PACKAGE_NAME=Main_package/RNN_model
+FILENAME = trainer
+
+PYTHON_VERSION=3.7
+FRAMEWORK=scikit-learn
+RUNTIME_VERSION=2.2
+
+REGION=europe-west1
+run_locally:
+	@python -m ${PACKAGE_NAME}.${FILENAME}
+
+gcp_submit_training:
+	gcloud ai-platform jobs submit training ${JOB_NAME} \
+		--job-dir gs://${BUCKET_NAME}/${BUCKET_TRAINING_FOLDER} \
+		--package-path ${PACKAGE_NAME} \
+		--module-name ${PACKAGE_NAME}.${FILENAME} \
+		--python-version=${PYTHON_VERSION} \
+		--runtime-version=${RUNTIME_VERSION} \
+		--region ${REGION} \
+		--stream-logs

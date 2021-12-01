@@ -7,7 +7,9 @@ EXPERIMENT_NAME = "[UK] [LONDON] [DALESSANDRO] LinearRegression + 0.1"
 
 PATH_TO_LOCAL_MODEL = 'model.joblib'
 
-AWS_BUCKET_TEST_PATH = "s3://wagon-public-datasets/taxi-fare-test.csv"
+AWS_BUCKET_TEST_PATH = "gs://wagon-750-btc-sent-fc/input_data/input_data_1.csv"
+
+
 
 ### GCP configuration - - - - - - - - - - - - - - - - - - -
 
@@ -19,14 +21,14 @@ AWS_BUCKET_TEST_PATH = "s3://wagon-public-datasets/taxi-fare-test.csv"
 
 ### GCP Storage - - - - - - - - - - - - - - - - - - - - - -
 
-BUCKET_NAME = 'wagon-data-750-dalessandro1989'
+BUCKET_NAME = 'wagon-data-750-btc-sent-fc'
 
 ##### Data  - - - - - - - - - - - - - - - - - - - - - - - -
 
 # train data file location
 # /!\ here you need to decide if you are going to train using the provided and uploaded data/train_1k.csv sample file
 # or if you want to use the full dataset (you need need to upload it first of course)
-BUCKET_TRAIN_DATA_PATH = 'data/train_1k.csv'
+BUCKET_TRAIN_DATA_PATH = 'raw_data/features_2016.csv'
 
 ##### Training  - - - - - - - - - - - - - - - - - - - - - -
 

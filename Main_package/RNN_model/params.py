@@ -37,7 +37,7 @@ BUCKET_TRAIN_DATA_PATH = 'raw_data/features_2016.csv'
 ##### Model - - - - - - - - - - - - - - - - - - - - - - - -
 
 # model folder name (will contain the folders for all trained model versions)
-MODEL_NAME = 'taxifare'
+MODEL_NAME = 'model'
 
 # model version folder name (where the trained model.joblib file will be stored)
 MODEL_VERSION = 'v2'
@@ -51,7 +51,9 @@ MODEL_VERSION = 'v2'
 
 no_log_col_ = [
     'tweets_sent', 'reddit_crypto_sent', 'reddit_econ_sent', 'News Sentiment',
-    'mempool-size']
+    'mempool-size', 'econ_neu', 'econ_neg', 'econ_pos', 'crypto_neu',
+    'crypto_neg', 'crypto_pos'
+]
 
 target = ['volume_gross']
 

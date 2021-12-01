@@ -67,10 +67,10 @@ class Trainer(object):
         return res #print(f'MAPE on the test set : {res[2]:.0f} %')
 
 
-    def save_model_locally(self):
+    def save_model_locally(self,name='model'):
         """Save the model into a .joblib format"""
-        joblib.dump(self.model, 'model.joblib')
-        print(colored("model.joblib saved locally", "green"))
+        joblib.dump(self.model, f'{name}.joblib')
+        print(colored(f"{name}.joblib saved locally", "green"))
 
 
 
@@ -82,8 +82,8 @@ if __name__ == "__main__":
     len_ = int(0.8 * df.shape[0])
     df_train = df[:len_]
     df_test = df[len_:]
-    X_train, y_train = get_X_y(df_train, 100, 90, target_name='volume_gross')
-    X_test, y_test = get_X_y(df_test, 100, 90, target_name='volume_gross')
+    X_train, y_train = get_X_y(df_train, 2000, 121, target_name='volume_gross')
+    X_test, y_test = get_X_y(df_test, 2000, 121, target_name='volume_gross')
     # Train and save model, locally and
     trainer = Trainer(X=X_train, y=y_train)
     #trainer.set_experiment_name('RNN_BTC')

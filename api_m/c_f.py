@@ -5,6 +5,7 @@ import numpy as np
 import os
 import gcsfs
 from Main_package.RNN_model.data import clean_features
+from Main_package.RNN_model.predict import predict_one_day
 
 dirname = os.path.dirname(__file__)
 PATH_TO_MODEL = os.path.join(dirname, "..", "model_RNN_8.joblib")
@@ -23,12 +24,8 @@ def index():
 
 @app_m.get("/predict")
 def predict():
-    model = joblib.load(PATH_TO_MODEL)
-    X_pred = np.zeros((1, 89, 61))
-    X_pred[0] = np.array(
-        clean_features(pd.read_csv("raw_data/Michelangelo_test.csv",
-                                  index_col=0,
-                                  parse_dates=True)))
-    y_pred = model.predict_on_batch(X_pred)
+    y_pred = predict_one_day(PATH_TO_MODEL="model.joblib",
+                                   shape=(1, 90, 67),
+                                   train_path="raw_data/test_2021_11_22.csv")
     return {"prediction": f"{np.exp(y_pred[0][0])}"}
     #return "It works"

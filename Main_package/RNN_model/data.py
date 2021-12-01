@@ -60,8 +60,6 @@ def get_features_from_raw_data():
     return clean_features(df)
 
 
-
-
 def get_target_from_raw_data():
     data_path = '../../raw_data/final_data'
 

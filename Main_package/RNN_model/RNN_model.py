@@ -17,12 +17,12 @@ from tensorflow.keras import optimizers, metrics
 
 
 
-def initial_model():
+def initial_model(normalizer):
 
     opt = optimizers.RMSprop(learning_rate=0.1)
 
     model = Sequential()
-    #model.add(normalizer)
+    model.add(normalizer)
 
 
     model.add(LSTM(units=50, activation='tanh',

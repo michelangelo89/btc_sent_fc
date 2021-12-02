@@ -23,14 +23,13 @@ def predict_one_day(
     """
     train_path shape must be 90 rows 67 columns
     """
-    preproc = joblib.load('preproc_pipe.joblib')
+    #preproc = joblib.load('preproc_pipe.joblib')
     model = joblib.load(PATH_TO_MODEL)
     X_pred = np.zeros(shape)
     df = pd.read_csv("raw_data/test_2021_11_22.csv",
                      index_col=0,
                      parse_dates=True)
-    df = pd.DataFrame(preproc.fit_transform(df),
-                      columns=df.columns,
-                      index=df.index)
+    df = df.interpolate(method='linear', axis=0)
+    df['volume_gross'] = np.log(df['volume_gross'])
     X_pred[0] = np.array(df)
-    return model.predict_on_batch(X_pred[0])
+    return np.exp(model.predict_on_batch(X_pred[0]))

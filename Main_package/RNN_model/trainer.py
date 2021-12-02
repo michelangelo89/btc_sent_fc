@@ -44,7 +44,7 @@ class Trainer(object):
     def run_model(self):
 
         es = callbacks.EarlyStopping(patience=20)
-        self.model = initial_model()
+        self.model = initial_model(normalizer=self.X)
         self.model.fit(self.X , self.y,
                             validation_split = 0.2,
                             epochs=3,
@@ -79,6 +79,8 @@ if __name__ == "__main__":
     #N = 100
     df = get_features_from_raw_data()  #nrows=N)
     #df = clean_data(df)
+    df = df.interpolate(method='linear', axis=0)
+    df['volume_gross'] = np.log(df['volume_gross'])
     len_ = int(0.8 * df.shape[0])
     df_train = df[:len_]
     df_test = df[len_:]

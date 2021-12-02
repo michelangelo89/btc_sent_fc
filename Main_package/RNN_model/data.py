@@ -57,7 +57,7 @@ def get_features_from_raw_data():
                      index_col=0,
                      parse_dates=True)
 
-    return clean_features(df)
+    return df
 
 
 

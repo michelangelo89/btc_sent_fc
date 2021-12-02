@@ -38,27 +38,28 @@ def clean_features(df):
                            ('scaler', StandardScaler())])
 
     preproc_pipe = make_column_transformer(
-        #(log_col, log_col_),
-        (no_log_col, no_log_col_),
-        (target_col, target),
-        remainder=log_col)
+        (log_col, log_col_), (no_log_col, no_log_col_), (target_col, target),
+        remainder="passthrough")
+
+    new_cols = log_col_ + no_log_col_ + target
 
 
     return pd.DataFrame(preproc_pipe.fit_transform(df),
-                        columns = df.columns,
-                        index = df.index)
+                        columns=df.new_cols,
+                        index=df.index)
+
+
 
 
 def get_features_from_raw_data():
 
-    data_path = 'raw_data/final_data'
+    data_path = '../../raw_data/final_data'
 
     df = pd.read_csv(os.path.join(data_path, 'input_data_input_data_1.csv'),
                      index_col=0,
                      parse_dates=True)
 
     return df
-
 
 
 def get_target_from_raw_data():

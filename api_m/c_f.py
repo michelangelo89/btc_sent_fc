@@ -8,7 +8,7 @@ from Main_package.RNN_model.data import clean_features
 from Main_package.RNN_model.predict import predict_one_day
 
 dirname = os.path.dirname(__file__)
-PATH_TO_MODEL = os.path.join(dirname, "..", "model_RNN_8.joblib")
+PATH_TO_MODEL = os.path.join(dirname, "..", "RNN_2_MAPE_best.joblib")
 
 fs = gcsfs.GCSFileSystem()
 with fs.open('wagon-data-750-btc-sent-fc/model/finbert_token.joblib') as f:

@@ -21,6 +21,7 @@ from tensorflow.keras import layers, callbacks
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import FunctionTransformer
 from Main_package.RNN_model.params import no_log_col_, target, log_col_
+from tensorflow.keras.layers.experimental.preprocessing import Normalization
 
 
 
@@ -34,7 +35,7 @@ class Trainer(object):
         self.X = X
         self.y = y
         # for MLFlow
-        self.experiment_name = EXPERIMENT_NAME
+        #self.experiment_name = EXPERIMENT_NAME
 
     def set_experiment_name(self, experiment_name):
         '''defines the experiment name for MLFlow'''
@@ -43,11 +44,14 @@ class Trainer(object):
 
     def run_model(self):
 
+        normalizer = Normalization()
+        normalizer.adapt(self.X)
+
         es = callbacks.EarlyStopping(patience=20)
-        self.model = initial_model(normalizer=self.X)
+        self.model = initial_model(normalizer)
         self.model.fit(self.X , self.y,
                             validation_split = 0.2,
-                            epochs=3,
+                            epochs=2,
                             callbacks=[es],verbose=1)
         return self.model
 
@@ -81,11 +85,12 @@ if __name__ == "__main__":
     #df = clean_data(df)
     df = df.interpolate(method='linear', axis=0)
     df['volume_gross'] = np.log(df['volume_gross'])
+
     len_ = int(0.8 * df.shape[0])
     df_train = df[:len_]
     df_test = df[len_:]
-    X_train, y_train = get_X_y(df_train, 2000, 121, target_name='volume_gross')
-    X_test, y_test = get_X_y(df_test, 2000, 121, target_name='volume_gross')
+    X_train, y_train = get_X_y(df_train, 2000, 91, target_name='volume_gross')
+    X_test, y_test = get_X_y(df_test, 2000, 91, target_name='volume_gross')
     # Train and save model, locally and
     trainer = Trainer(X=X_train, y=y_train)
     #trainer.set_experiment_name('RNN_BTC')
@@ -93,6 +98,6 @@ if __name__ == "__main__":
     res = trainer.evaluate(X_test, y_test)
     print(f'MAPE on the test set : {res[2]:.0f} %')
     #print(f"rmse: {res}")
-    trainer.save_model_locally()
+    #trainer.save_model_locally()
 
     #storage_upload()

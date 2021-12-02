@@ -13,23 +13,36 @@ def get_model(path_to_joblib):
 
 
 
-#dirname = os.path.dirname(__file__)
-#PATH_TO_MODEL = os.path.join(dirname, "..", "model_RNN_1.joblib")
+dirname = os.path.dirname(__file__)
+PATH_TO_MODEL = os.path.join(dirname, "..", "..", "RNN_2_MAPE_best.joblib")
+
+dirname = os.path.dirname(__file__)
+PATH_TO_DATA = os.path.join(dirname, "..", "..", "raw_data/test_log_vol.csv")
+
 
 def predict_one_day(
-        PATH_TO_MODEL="model.joblib",
-        shape=(1, 90, 67),
-        train_path="raw_data/test_2021_11_22.csv"):
+        shape=(1, 90, 67)):
     """
     train_path shape must be 90 rows 67 columns
     """
     #preproc = joblib.load('preproc_pipe.joblib')
     model = joblib.load(PATH_TO_MODEL)
     X_pred = np.zeros(shape)
-    df = pd.read_csv("raw_data/test_2021_11_22.csv",
-                     index_col=0,
-                     parse_dates=True)
+    df = pd.read_csv(PATH_TO_DATA, index_col=0, parse_dates=True)
     df = df.interpolate(method='linear', axis=0)
-    df['volume_gross'] = np.log(df['volume_gross'])
+    #df['volume_gross'] = np.log(df['volume_gross'])
     X_pred[0] = np.array(df)
-    return np.exp(model.predict_on_batch(X_pred[0]))
+    return np.exp(model.predict_on_batch(X_pred[0][0]))
+
+if __name__ == "__main__":
+    """
+    train_path shape must be 90 rows 67 columns
+    """
+    #preproc = joblib.load('preproc_pipe.joblib')
+    model = joblib.load(PATH_TO_MODEL)
+    X_pred = np.zeros((1, 90, 67))
+    df = pd.read_csv(PATH_TO_DATA, index_col=0, parse_dates=True)
+    df = df.interpolate(method='linear', axis=0)
+    #df['volume_gross'] = np.log(df['volume_gross'])
+    X_pred[0] = np.array(df)
+    print(np.exp(model.predict_on_batch(X_pred[0][0])))

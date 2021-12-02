@@ -16,7 +16,6 @@ from tensorflow.keras import optimizers, metrics
 
 
 
-
 def initial_model(normalizer):
 
     opt = optimizers.RMSprop(learning_rate=0.1)
@@ -28,7 +27,7 @@ def initial_model(normalizer):
     model.add(LSTM(units=50, activation='tanh',
                    return_sequences=True))  # dropout = 0.2
     #model.add(Dropout(0.2))
-    model.add(LSTM(units=100, activation='tanh', return_sequences=True))
+    model.add(LSTM(units=100, activation='tanh', return_sequences=False))
     #model.add(Dropout(0.2))
 
     model.add(layers.Dense(10, activation='relu'))

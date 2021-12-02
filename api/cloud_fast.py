@@ -94,7 +94,10 @@ def predict(model_name = "model_RNN_8.joblib", file_name = "test_2021_11_22.csv"
         model = joblib.load(f)
 
     X_pred = np.zeros(shape)
-    X_pred[0] = np.array(pd.read_csv(f"gcs://wagon-data-750-btc-sent-fc/input_data/{file_name}", index_col = 0, parse_dates = True))
+    X_pred[0] = np.array(pd.read_csv(
+        f"gcs://wagon-data-750-btc-sent-fc/input_data/{file_name}",
+        index_col = 0,
+        parse_dates = True))
     y_pred = model.predict_on_batch(X_pred)
     return {"prediction": f"{np.exp(y_pred[0][0])}"}
     #return "It works"

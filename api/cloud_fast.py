@@ -85,19 +85,20 @@ def scrape_twitter(n=1, start_date = None, topic = "inflation"):
 
 
 @app.get("/predict")
-def predict(model_name = "model_RNN_8.joblib", file_name = "test_2021_11_22.csv", shape = (1,89,61)):
+def predict(model_name = "model_RNN_8.joblib", file_name = "pred_1.csv", shape_row = 90, shape_feat = 61):
     """model_name is a string - "model_name.joblib"
     date is also a string - in the format "yyyy_mm_dd"
     shape is a 3 part tuple with the input dimensions of the model"""
+    shape = (1, int(shape_row), int(shape_feat))
     fs = gcsfs.GCSFileSystem()
     with fs.open(f'wagon-data-750-btc-sent-fc/model/{model_name}') as f:
         model = joblib.load(f)
 
     X_pred = np.zeros(shape)
-    X_pred[0] = np.array(pd.read_csv(
+    X_pred[0] = pd.read_csv(
         f"gcs://wagon-data-750-btc-sent-fc/input_data/{file_name}",
         index_col = 0,
-        parse_dates = True))
+        parse_dates = True)
     y_pred = model.predict_on_batch(X_pred)
     return {"prediction": f"{np.exp(y_pred[0][0])}"}
     #return "It works"

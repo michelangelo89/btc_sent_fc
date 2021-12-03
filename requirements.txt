@@ -23,7 +23,6 @@ cffi==1.15.0
 charset-normalizer==2.0.7
 click==8.0.3
 cloudpickle==2.0.0
--e git+ssh://git@github.com/toporas/btc_sent_fc.git@a095fe8a9b0f521bd72b10486d43e77387a71999#egg=CloudSentiment
 colorama==0.4.4
 coverage==6.2
 cycler==0.11.0
@@ -90,7 +89,6 @@ keyring==23.4.0
 kiwisolver==1.3.2
 lazy-object-proxy==1.6.0
 libclang==12.0.0
--e git+ssh://git@github.com/toporas/btc_sent_fc.git@a095fe8a9b0f521bd72b10486d43e77387a71999#egg=Main_package
 Mako==1.1.6
 Markdown==3.3.6
 MarkupSafe==2.0.1
@@ -154,7 +152,6 @@ requests==2.26.0
 requests-oauthlib==1.3.0
 requests-toolbelt==0.9.1
 rfc3986==1.5.0
--e git+ssh://git@github.com/toporas/btc_sent_fc.git@a095fe8a9b0f521bd72b10486d43e77387a71999#egg=root
 rsa==4.8
 s3fs==2021.11.1
 sacremoses==0.0.46
@@ -201,3 +198,44 @@ wrapt==1.13.3
 yapf==0.31.0
 yarl==1.7.2
 zipp==3.6.0
+
+# packaging
+pip>=9
+setuptools>=26
+twine
+wheel>=0.29
+
+# data science
+numpy
+pandas
+scikit-learn
+tensorflow
+keras
+
+# nlp
+torch
+transformers
+
+# tests/linter
+black
+coverage
+flake8
+pytest
+yapf
+
+# API
+fastapi
+uvicorn
+gcsfs
+google-cloud-storage
+mlflow
+s3fs
+tweepy
+osometweet
+
+# utilities
+six>=1.14
+joblib
+memoized-property
+termcolor
+python-dotenv
